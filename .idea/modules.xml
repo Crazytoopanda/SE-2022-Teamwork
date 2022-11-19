@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SE-2022-Teamwork.iml" filepath="$PROJECT_DIR$/.idea/SE-2022-Teamwork.iml" />
-      <module fileurl="file://$PROJECT_DIR$/mubang/jdbc.iml" filepath="$PROJECT_DIR$/mubang/jdbc.iml" />
     </modules>
   </component>
 </project>
