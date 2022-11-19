@@ -617,6 +617,7 @@
   width:196px;
   height:56px;
   display:flex;
+  cursor: pointer;
   font-size:32px;
 }
 #u90 .text {

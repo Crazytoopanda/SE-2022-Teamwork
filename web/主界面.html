@@ -39,7 +39,6 @@
     <script src="resources/scripts/axure/jquery.nicescroll.min.js"></script>
     <script src="data/document.js"></script>
     <script src="files/主界面/data.js"></script>
-    <script src="https://unpkg.com/jquery@3.6.0/dist/jquery.js"></script>
 
     <script>
     var jugdeString = function(e) {
@@ -226,8 +225,10 @@ return head + s.replace(/(零.)*零元/, '元')
           return 
         }
       }
+
+
     </script>
-    
+  
     <script type="text/javascript">
       $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
       $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
@@ -236,7 +237,7 @@ return head + s.replace(/(零.)*零元/, '元')
   </head>
   <body>
     <div id="base" class="">
-
+          
       <!-- Unnamed (图片) -->
       <div id="u0" class="ax_default _图片">
         <img id="u0_img" class="img " src="images/主界面/u0.jpg"/>
@@ -244,6 +245,65 @@ return head + s.replace(/(零.)*零元/, '元')
           <p></p>
         </div>
       </div>
+      
+      <!-- password user -->
+      <div id="denglu" class="ax_default label" style=" position:absolute;
+  left:590px;
+  top:120px;
+  width:82px;
+  height:50px;
+  display:flex;">
+          <div id="denglu_div" class=""></div>
+          <div id="denglu_text" class="text ">
+            <p><span style='font-family:"华光中圆_CNKI Bold", "华光中圆_CNKI", sans-serif;
+  font-weight:700;
+  font-style:normal;
+  font-size:40px;'>用户</span></p>
+          </div>
+        </div>
+        
+        <div id="user" class="ax_default text_field" style=" position:absolute;
+  left:700px;
+  top:120px;
+  width:82px;
+  height:50px;
+  display:flex;">
+          <div id="user_div" class=""></div>
+          <input id="user_input" style="font-size: 40px;" type="text" value="" class="u35_input" />
+        </div>
+
+
+      <div id="mima" class="ax_default label" style=" position:absolute;
+        left:590px;
+        top:200px;
+        width:82px;
+        height:50px;
+        display:flex;">
+        <div id="mima_div" class=""></div>
+        <div id="mima_text" class="text ">
+          <p><span style='font-family:"华光中圆_CNKI Bold", "华光中圆_CNKI", sans-serif;
+        font-weight:700;
+        font-style:normal;
+        font-size:40px;'>密码</span></p>
+        </div>
+      </div>
+      
+      <div id="pwd" class="ax_default text_field" style=" position:absolute;
+        left:700px;
+        top:200px;
+        width:82px;
+        height:50px;
+        display:flex;">
+        <div id="pwd_div" class=""></div>
+        <input id="pwd_input" style="font-size: 40px;" type="text" value="" class="u35_input" />
+      </div>
+      <div id="login1" class="">
+        <div id="login1_div" class=""></div>
+        <div id="login1_text" class="text ">
+          <p>登录</p>
+        </div>
+      </div>
+      //
 
       <!-- Unnamed (组合) -->
       <div id="u1" class="ax_default ax_default_hidden" style="display:none; visibility: hidden" data-left="1355" data-top="437" data-width="514" data-height="293" layer-opacity="1">
@@ -471,8 +531,18 @@ return head + s.replace(/(零.)*零元/, '元')
 
       <!-- Unnamed (文本域) -->
       <div id="u31" class="ax_default text_area ax_default_hidden" style="display:none; visibility: hidden">
-        <div id="u31_div" class=""></div>
-        <textarea id="u31_input" class="u31_input" ></textarea>
+          <textarea id="u31_input" class="u31_input" ></textarea>
+            <div id="u31_div" class="">
+              <div id="u31_text" class="tab_menu">
+                <ul style="margin: 0px 0px; padding: 0px 0px">
+                  <li id="u31_li_text1" onclick="">所有内容</li>
+                  <li id="u31_li_text2" >按日期查找<input type="datetime" value="" style="width:80px; height:25px" /> </li>
+                  <li id="u31_li_text3" >清空记录</li>
+                </ul>
+              </div>
+
+            </div>
+            
       </div>
 
       <!-- Unnamed (矩形) -->
@@ -483,101 +553,8 @@ return head + s.replace(/(零.)*零元/, '元')
         </div>
       </div>
 
-      <script>
-      function loginclick(){
-         // $('#cbtn').removeAttr("disabled");
-         let user = document.getElementById('user_input').value;
-         let pwd = document.getElementById('pwd_input').value;
-         $.ajax({
-          type: "GET",
-          url: "http://localhost:8080/user/getuserbyname",
-          dataType: 'json',
-          data: {
-            "uid": user,
-            "password": pwd
-          },
-          complete: function (res) {
-            if (res["success"] == true) {
-              $('#cbtn').removeAttr("disabled");
-            }
-          }
-        })
-          
-      }
-      </script>
-      <button onclick="loginclick()" id="login" style="
-                    width: 60px;
-                    height: 40px;
-                    position:absolute;
-                    left:590px;
-                    top:270px;
-                    display:flex;
-                    font-size:20px;
-                " >登录</button>
-
-
       <!-- Unnamed (组合) -->
-      <div id="u33" class="ax_default" data-left="590" data-top="300" data-width="619" data-height="75" layer-opacity="1">
-
-
-        <div id="denglu" class="ax_default label" style=" position:absolute;
-  left:590px;
-  top:120px;
-  width:82px;
-  height:50px;
-  display:flex;">
-          <div id="denglu_div" class=""></div>
-          <div id="denglu_text" class="text ">
-            <p><span style='font-family:"华光中圆_CNKI Bold", "华光中圆_CNKI", sans-serif;
-  font-weight:700;
-  font-style:normal;
-  font-size:40px;'>用户</span></p>
-          </div>
-        </div>
-        
-        <div id="user" class="ax_default text_field" style=" position:absolute;
-  left:700px;
-  top:120px;
-  width:82px;
-  height:50px;
-  display:flex;">
-          <div id="user_div" class=""></div>
-          <input id="user_input" style="font-size: 40px;" type="text" value="" class="u35_input" />
-        </div>
-
-
-      <div id="mima" class="ax_default label" style=" position:absolute;
-        left:590px;
-        top:200px;
-        width:82px;
-        height:50px;
-        display:flex;">
-        <div id="mima_div" class=""></div>
-        <div id="mima_text" class="text ">
-          <p><span style='font-family:"华光中圆_CNKI Bold", "华光中圆_CNKI", sans-serif;
-        font-weight:700;
-        font-style:normal;
-        font-size:40px;'>密码</span></p>
-        </div>
-      </div>
-      
-      <div id="pwd" class="ax_default text_field" style=" position:absolute;
-        left:700px;
-        top:200px;
-        width:82px;
-        height:50px;
-        display:flex;">
-        <div id="pwd_div" class=""></div>
-        <input id="pwd_input" style="font-size: 40px;" type="text" value="" class="u35_input" />
-      </div>
-      
-
-
-
-
-
-
-
+      <div id="u33" class="ax_default" data-left="590" data-top="341" data-width="619" data-height="75" layer-opacity="1">
 
         <!-- Unnamed (矩形) -->
         <div id="u34" class="ax_default label">
@@ -614,11 +591,9 @@ return head + s.replace(/(零.)*零元/, '元')
 
       <!-- Unnamed (矩形) -->
       <div id="u39" class="ax_default button">
+        <div id="u39_div" class=""></div>
         <div id="u39_text" class="text ">
-          <p><button onclick="convert()" id="cbtn" style="
-              width: 256px;
-              height: 76px; font-size: 50px;
-          " disabled="disabled">转换</button></p>
+          <p><span onclick="convert()">转换</span></p>
         </div>
       </div>
 
