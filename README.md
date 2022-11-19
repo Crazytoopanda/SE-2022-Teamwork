@@ -13,4 +13,5 @@
 web端页面进行交互
 
 ### 运行方式
-直接进行web主界面交互
+后端部分：先创建一个数据库，数据库名为newtask，账号为root，密码为xY4xaiyx7aEmETtb，端口为3306，然后导入newtask.sql脚本，并运行jar包.  
+前端部分：进入web下的登录界面.html即可完成运行.
