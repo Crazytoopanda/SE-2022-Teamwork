@@ -46,9 +46,27 @@
     </script>
     <script>
       function zhuce(){
-        let inputName = document.getElementById("u85_input");
-        uid = inputName.value;
-       
+        let inputUser = document.getElementById("u85_input");
+        let inputPassword = document.getElementById("u88_input");
+        UID = inputUser.value;
+        password = inputPassword.value;
+
+        $.ajax({
+          type:"POST",
+          url:"http://localhost:8080/user/insertuser",
+          dataType:'json',
+          data:{
+            UID:UID,
+            password:password
+          },
+          success:function(res){
+            if(res == false){
+              alert("UID已经注册");s
+            }
+            window.history.go(-1);
+          }
+        })
+        return
       }
     </script>
   </head>
@@ -130,10 +148,10 @@
         </div>
 
         <!-- Unnamed (形状) -->
-        <div id="u90" class="ax_default button">
+        <div id="u90" class="ax_default button" >
           <img id="u90_img" class="img " src="images/登录界面/u77.svg"/>
-          <div id="u90_text" class="text ">
-            <p><span onclick="zhuce">注册</span></p>
+          <div id="u90_text" class="text " >
+            <p ><span onclick="zhuce()">注册</span></p>
           </div>
         </div>
       </div>
