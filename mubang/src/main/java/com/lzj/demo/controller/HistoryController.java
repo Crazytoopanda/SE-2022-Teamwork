@@ -20,7 +20,7 @@ public class HistoryController {
 
     @Autowired
     private HistoryService historyService;
-
+    @CrossOrigin
     @RequestMapping(value = "/listhistory", method = RequestMethod.GET)
     private Map<String,Object> listHistory(){
         Map<String,Object> modelMap = new HashMap<>();
@@ -28,7 +28,7 @@ public class HistoryController {
         modelMap.put("historylist",list);
         return modelMap;
     }
-
+    @CrossOrigin
     @RequestMapping(value = "/queryhistorybyuid",method = RequestMethod.GET)
     private Map<String,Object> queryHistoryByUID(String UID){
         Map<String,Object> modelMap = new HashMap<>();
@@ -36,7 +36,7 @@ public class HistoryController {
         modelMap.put("historylist",historylist);
         return modelMap;
     }
-
+    @CrossOrigin
     @RequestMapping(value = "/queryhistorybyuidanddate",method = RequestMethod.GET)
     private Map<String,Object> queryHistoryByUIDAndDate(@RequestParam(value = "UID")String UID, @RequestParam(value = "date")String date){
         Map<String,Object> modelMap = new HashMap<>();
@@ -44,20 +44,21 @@ public class HistoryController {
         modelMap.put("historylist",historylist);
         return modelMap;
     }
+    @CrossOrigin
     @RequestMapping(value = "/inserthistory",method = RequestMethod.POST)
     private Map<String,Object> insertHistory(@RequestBody History history){
         Map<String,Object> modelMap = new HashMap<>();
         modelMap.put("success",historyService.insertHistory(history));
         return modelMap;
     }
-
+    @CrossOrigin
     @RequestMapping(value = "/deletehistorybyuid",method = RequestMethod.GET)
     private Map<String,Object> deleteHistoryByUID(String UID){
         Map<String,Object> modelMap = new HashMap<>();
         modelMap.put("success",historyService.deleteHistoryByUID(UID));
         return modelMap;
     }
-
+    @CrossOrigin
     @RequestMapping(value = "/deletehistorybyuidanddate",method = RequestMethod.GET)
     private Map<String,Object> deleteHistoryByUIDAndDate(@RequestParam(value = "UID")String UID, @RequestParam(value = "date")String date){
         Map<String,Object> modelMap = new HashMap<>();

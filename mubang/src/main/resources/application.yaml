@@ -1,11 +1,7 @@
 spring:
   datasource:
     username: root
-<<<<<<< HEAD
-    password: xY4xaiyx7aEmETtb
-=======
     password: 123456
->>>>>>> d5c34c1 (框架+数据库)
     url: jdbc:mysql://localhost:3306/newtask?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource # 自定义数据源

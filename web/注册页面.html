@@ -50,20 +50,27 @@
         let inputPassword = document.getElementById("u88_input");
         UID = inputUser.value;
         password = inputPassword.value;
-
         $.ajax({
           type:"POST",
           url:"http://localhost:8080/user/insertuser",
-          dataType:'json',
-          data:{
-            "uid":UID,
-            "password":password
-          },
+          contentType:"application/json;charset=utf-8",
+          dataType: "JSON",
+          data:JSON.stringify({
+            "password":password,
+            "UID": UID,
+            "userName": "1"
+            
+          }),
           success:function(res){
-            if(res == false){
+            if(res.success == false){
               alert("UID已经注册");
+              window.history.go(-1);
             }
-            window.history.go(-1);
+            else{
+              alert("success!");
+              window.history.go(-1);
+            }
+            
           }
         })
         return

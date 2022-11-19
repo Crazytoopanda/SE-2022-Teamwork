@@ -24,6 +24,7 @@ public class UserController {
     private UserService userService;
 
     @RequestMapping(value = "/listuser", method = RequestMethod.GET)
+    @CrossOrigin
     private Map<String,Object> listUser(){
         Map<String,Object> modelMap = new HashMap<>();
         List<User> list = userService.queryUser();
@@ -31,12 +32,14 @@ public class UserController {
         return modelMap;
     }
     @RequestMapping(value = "/getuserbyname",method = RequestMethod.GET)
+    @CrossOrigin
     private Map<String,Object> getUserByName(@RequestParam(value = "UID")String UID, @RequestParam(value = "password")String password){
         Map<String,Object> modelMap = new HashMap<>();
         modelMap.put("success",userService.queryUserByUid(UID,password));
         return modelMap;
     }
     @RequestMapping(value = "/insertuser",method = RequestMethod.POST)
+    @CrossOrigin
     private Map<String,Object> createUser(@RequestBody User user){
         Map<String,Object> modelMap = new HashMap<>();
         modelMap.put("success",userService.insertUser(user));
@@ -45,12 +48,14 @@ public class UserController {
 
 
     @RequestMapping(value = "/updateuser",method = RequestMethod.POST)
+    @CrossOrigin
     private Map<String,Object> updateUser(@RequestBody User user){
         Map<String,Object> modelMap = new HashMap<>();
         modelMap.put("success",userService.updateUser(user));
         return modelMap;
     }
     @RequestMapping(value = "/deleteuser",method = RequestMethod.POST)
+    @CrossOrigin
     private Map<String,Object> deleteUser(@RequestBody User user){
         Map<String,Object> modelMap = new HashMap<>();
         modelMap.put("success",userService.deleteUser(user));

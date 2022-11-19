@@ -48,6 +48,29 @@
   <body>
     <div id="base" class="">
 
+      <script>
+        function showall() {
+            $.ajax({
+              type: "GET",
+              url: "http://localhost:8080/history/queryhistorybyuid",
+              dataType: 'json',
+              data: {
+                "UID": myuid,
+              },
+              success: function (res) {
+                // console.log(res);
+                let history = res.history;
+                for (i = 0; i < hisoutput.length; i++) {
+                  document.getElementById("u31_input").value += history.input + " ";
+                  document.getElementById("u31_input").value += history.output + " ";
+                  document.getElementById("u31_input").value += history.date + "\n";
+                }
+              }
+            })
+          }
+
+      </script>
+
       <!-- Unnamed (图片) -->
       <div id="u64" class="ax_default _图片">
         <img id="u64_img" class="img " src="images/主界面/u0.jpg"/>

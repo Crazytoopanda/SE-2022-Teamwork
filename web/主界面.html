@@ -188,9 +188,19 @@ return head + s.replace(/(零.)*零元/, '元')
 
 
 
-      function convert(){
+      function convert_and_history(){
         let input = document.getElementById("u35_input");
         let output = document.getElementById("u37_input");
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth() + 1;
+        month = month < 10 ? "0" + month : month;
+        let day = date.getDate();
+        day = day < 10 ? "0" + day : day;
+        let current = year + "-" + month + "-" + day;
+
+        console.log("记录时间: "+current)
+
         let inputValue = input.value;
         let params = inputValue;
         if (jugdeString(inputValue) == 0) {
@@ -199,31 +209,29 @@ return head + s.replace(/(零.)*零元/, '元')
         }
         else if (jugdeString(inputValue) == 1){
           output.value = digitUppercase(inputValue);
-          $.ajax({
-          type:"GET",  
-          url:`http://localhost:8088/translation/translationFromSmallToCapital?string=${inputValue}`,
-          dataType:"json",
-          success:function(res){
-            console.log(1);
-            output.value = res["result"];
-          }
-        })
-          return
         }
         
         else if (jugdeString(inputValue) == 2){
           output.value = getMoneyNum(inputValue);
-          $.ajax({
-          type:"GET",  
-          url:`http://localhost:8088/translation/translationFromCapitalToSmall?string=${inputValue}`,
-          dataType:"json",
-          success:function(res){
-            console.log(1);
-            output.value = res["result"];
-          }
-          })
-          return 
         }
+        
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/history/inserthistory",
+            dataType: "json",
+            contentType:"application/json;charset=utf-8",
+            data: JSON.stringify({
+              "UID": myuid,
+              "input": input.value,
+              "output": output.value,
+              "date": current
+            }),
+            success: function (res) {
+              return
+            }
+        })
+        
+
       }
 
 
@@ -236,6 +244,61 @@ return head + s.replace(/(零.)*零元/, '元')
     </script>
   </head>
   <body>
+
+    <script>
+        function clear(){
+          document.getElementById("u31_input").value = "";
+        }
+      function showall() {
+        console.log("dadada");
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:8080/history/queryhistorybyuid",
+          contentType:"application/json;charset=utf-8",
+          dataType: 'json',
+          data: {
+            "UID": myuid,
+          },
+          success: function (res) {
+            // console.log(res);
+            let history = res.historylist;
+            document.getElementById("u31_input").value = "";
+            for (i = 0; i < history.length; i++) {
+              document.getElementById("u31_input").value += history[i].input + " ";
+              document.getElementById("u31_input").value += history[i].output + " ";
+              document.getElementById("u31_input").value += history[i].date + "\n";
+            }
+          }
+        })
+      }
+
+    </script>
+
+    <script>
+      function loginclick() {
+        $('#cbtn').removeAttr("disabled");
+        let user = document.getElementById('user_input').value;
+        let pwd = document.getElementById('pwd_input').value;
+        $.ajax({
+          type: "GET",
+          url: "http://localhost:8080/user/getuserbyname",
+          dataType: 'json',
+          data: {
+            "UID": user,
+            "password": pwd
+          },
+          success: function (res) {
+            // console.log(res);
+            myuid = user;
+            console.log(`登录成功: myuid ${myuid}`)
+            if (res["success"] == "true") {
+              $('#cbtn').removeAttr("disabled");
+            }
+          }
+        })
+      }
+    </script>
+
     <div id="base" class="">
           
       <!-- Unnamed (图片) -->
@@ -297,7 +360,7 @@ return head + s.replace(/(零.)*零元/, '元')
         <div id="pwd_div" class=""></div>
         <input id="pwd_input" style="font-size: 40px;" type="text" value="" class="u35_input" />
       </div>
-      <div id="login1" class="">
+      <div id="login1" onclick="loginclick()" class="">
         <div id="login1_div" class=""></div>
         <div id="login1_text" class="text ">
           <p>登录</p>
@@ -530,18 +593,19 @@ return head + s.replace(/(零.)*零元/, '元')
       </div>
 
       <!-- Unnamed (文本域) -->
-      <div id="u31" class="ax_default text_area ax_default_hidden" style="display:none; visibility: hidden">
-          <textarea id="u31_input" class="u31_input" ></textarea>
-            <div id="u31_div" class="">
-              <div id="u31_text" class="tab_menu">
-                <ul style="margin: 0px 0px; padding: 0px 0px">
-                  <li id="u31_li_text1" onclick="">所有内容</li>
-                  <li id="u31_li_text2" >按日期查找<input type="datetime" value="" style="width:80px; height:25px" /> </li>
-                  <li id="u31_li_text3" >清空记录</li>
-                </ul>
-              </div>
 
-            </div>
+      <div id="u31" class="ax_default text_area ax_default_hidden" style="display:none; visibility: hidden">
+        <div id="u31_div" class="">
+          <div id="u31_text" class="tab_menu">
+            <ul style="margin: 0px 0px; padding: 0px 0px">
+              <li id="u31_li_text1" onclick="showall()">所有内容</li>
+              <li id="u31_li_text2">按日期查找<input type="datetime" value="" style="width:80px; height:25px" /> </li>
+              <li id="u31_li_text3" onclick="clear()">清空记录</li>
+            </ul>
+          </div>
+        </div>
+        <textarea id="u31_input" class="u31_input" style="font-size:12px"></textarea>
+            
             
       </div>
 
@@ -593,7 +657,10 @@ return head + s.replace(/(零.)*零元/, '元')
       <div id="u39" class="ax_default button">
         <div id="u39_div" class=""></div>
         <div id="u39_text" class="text ">
-          <p><span onclick="convert()">转换</span></p>
+          <p><button onclick="convert_and_history()" id="cbtn" style="
+                        width: 256px;
+                        height: 76px; font-size: 50px;
+                    " disabled="disabled">转换</button></p>
         </div>
       </div>
 
