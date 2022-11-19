@@ -489,12 +489,12 @@ return head + s.replace(/(零.)*零元/, '元')
          let user = document.getElementById('user_input').value;
          let pwd = document.getElementById('pwd_input').value;
          $.ajax({
-          type: "POST",
+          type: "GET",
           url: "http://localhost:8080/user/getuserbyname",
           dataType: 'json',
           data: {
-            UID: user,
-            password: pwd
+            "uid": user,
+            "password": pwd
           },
           complete: function (res) {
             if (res["success"] == true) {

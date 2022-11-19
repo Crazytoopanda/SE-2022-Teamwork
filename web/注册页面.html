@@ -56,12 +56,12 @@
           url:"http://localhost:8080/user/insertuser",
           dataType:'json',
           data:{
-            UID:UID,
-            password:password
+            "uid":UID,
+            "password":password
           },
           success:function(res){
             if(res == false){
-              alert("UID已经注册");s
+              alert("UID已经注册");
             }
             window.history.go(-1);
           }
