@@ -1,0 +1,707 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>主界面</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="resources/css/axure_rp_page.css" type="text/css" rel="stylesheet"/>
+    <link href="data/styles.css" type="text/css" rel="stylesheet"/>
+    <link href="files/主界面/styles.css" type="text/css" rel="stylesheet"/>
+    <script src="resources/scripts/jquery-3.2.1.min.js"></script>
+    <script src="resources/scripts/axure/axQuery.js"></script>
+    <script src="resources/scripts/axure/globals.js"></script>
+    <script src="resources/scripts/axutils.js"></script>
+    <script src="resources/scripts/axure/annotation.js"></script>
+    <script src="resources/scripts/axure/axQuery.std.js"></script>
+    <script src="resources/scripts/axure/doc.js"></script>
+    <script src="resources/scripts/messagecenter.js"></script>
+    <script src="resources/scripts/axure/events.js"></script>
+    <script src="resources/scripts/axure/recording.js"></script>
+    <script src="resources/scripts/axure/action.js"></script>
+    <script src="resources/scripts/axure/expr.js"></script>
+    <script src="resources/scripts/axure/geometry.js"></script>
+    <script src="resources/scripts/axure/flyout.js"></script>
+    <script src="resources/scripts/axure/model.js"></script>
+    <script src="resources/scripts/axure/repeater.js"></script>
+    <script src="resources/scripts/axure/sto.js"></script>
+    <script src="resources/scripts/axure/utils.temp.js"></script>
+    <script src="resources/scripts/axure/variables.js"></script>
+    <script src="resources/scripts/axure/drag.js"></script>
+    <script src="resources/scripts/axure/move.js"></script>
+    <script src="resources/scripts/axure/visibility.js"></script>
+    <script src="resources/scripts/axure/style.js"></script>
+    <script src="resources/scripts/axure/adaptive.js"></script>
+    <script src="resources/scripts/axure/tree.js"></script>
+    <script src="resources/scripts/axure/init.temp.js"></script>
+    <script src="resources/scripts/axure/legacy.js"></script>
+    <script src="resources/scripts/axure/viewer.js"></script>
+    <script src="resources/scripts/axure/math.js"></script>
+    <script src="resources/scripts/axure/jquery.nicescroll.min.js"></script>
+    <script src="data/document.js"></script>
+    <script src="files/主界面/data.js"></script>
+
+    <script>
+    var jugdeString = function(e) {
+
+let inputText = e;
+if(!isNaN(Number(inputText)) & Number.isInteger(Number(inputText))) {
+    console.log("小写转大写");
+    return 1;
+
+} else {
+    if(digitUppercase(getMoneyNum(inputText)) == inputText) {
+        console.log("大写转小写");
+        return 2;
+    } else {
+        console.log("不行");
+        return 0;
+    }
+}
+};
+
+
+const getMoneyNum = (money) => {
+const dic= {
+  零: 0,
+  壹: 1,
+  贰: 2,
+  叁: 3,
+  肆: 4,
+  伍: 5,
+  陆: 6,
+  柒: 7,
+  捌: 8,
+  玖: 9,
+};
+
+// 处理仟,佰,拾;'叁仟肆佰伍拾壹' => '3451'
+const getInfo = (item) => {
+  let itemCount = 0;
+
+  // 将仟，佰，拾 拆分数组 '叁仟肆佰伍拾壹' => ['叁仟', '肆佰', '伍拾', '壹']
+  let arr = item
+    .replace(/(\w*仟)(\w*)/, "$1,$2")
+    .replace(/(\w*佰)(\w*)/, "$1,$2")
+    .replace(/(\w*拾)(\w*)/, "$1,$2")
+    .split(',')
+    .filter(_item => {
+      return _item && _item.trim();
+    });
+
+  // 处理每个单位对应的值
+  for (let subItem of arr) {
+    let currValue = 0;
+    let subArr = subItem.split('');
+    if (subArr[1] === '拾') {
+      // 处理拾位
+      currValue = dic[subArr[0]] * 10;
+    } else if (subArr[1] === '佰') {
+      //处理佰位
+      currValue = dic[subArr[0]] * 100;
+    } else if (subArr[1] === '仟') {
+      // 处理仟位
+      currValue = dic[subArr[0]] * 1000;
+    } else {
+      // 处理个位
+      currValue = dic[subArr[0]];
+    }
+    itemCount += currValue;
+  }
+  return itemCount;
+};
+
+let totalMoney = 0;
+
+// 按照亿,万,拆分成数组;'叁仟肆佰伍拾亿零壹佰陆拾柒万叁仟肆佰伍拾壹元捌角伍分' => ['叁仟肆佰伍拾亿', '壹佰陆拾柒万', '叁仟肆佰伍拾壹元', '捌角', '伍分']
+let newMoney = money
+  .replace(/零/g, '').replace(/整/g, '') // 去掉 '零','整'
+  .replace(/(\w*亿)(\w*)/, "$1,$2")
+  .replace(/(\w*万)(\w*)/, "$1,$2")
+  .replace(/(\w*元)(\w*)/, "$1,$2")
+  .replace(/(\w*角)(\w*)/, "$1,$2")
+  .split(',')
+  .filter(_item => {
+    return _item && _item.trim();
+  });
+
+// 按照亿,万及以下单位为组, 循环求解求解数值;
+for (let mainItem of newMoney) {
+  let currMoney = 0;
+  let mainArr = mainItem.split('');
+
+  if (mainArr[mainArr.length - 1] === '亿') {
+    mainArr.pop(); // 去掉亿单位
+    currMoney = getInfo(mainArr.join('')) * 100000000; // 求仟,佰,拾
+  } else if (mainArr[mainArr.length - 1] === '万') {
+    mainArr.pop(); // 去掉万单位
+    currMoney = getInfo(mainArr.join('')) * 10000; // 求仟,佰,拾
+  } else if (mainArr[mainArr.length - 1] === '元') {
+    mainArr.pop(); // 去掉元
+    currMoney = getInfo(mainArr.join('')); // 求仟,佰,拾
+  } else if (mainArr[mainArr.length - 1] === '角') {
+    mainArr.pop(); // 去掉角
+    currMoney = dic[mainArr[0]] * 0.1;
+  } else if (mainArr[mainArr.length - 1] === '分') {
+    mainArr.pop(); // 去掉分
+    currMoney = dic[mainArr[0]] * 0.01;
+  }
+  totalMoney += currMoney;
+}
+
+return totalMoney.toString();
+};
+
+
+var digitUppercase = function(n) {
+var fraction = ['角', '分'];
+
+var digit = [
+    '零', '壹', '贰', '叁', '肆',
+    '伍', '陆', '柒', '捌', '玖'
+];
+
+var unit = [
+    ['元', '万', '亿'],
+    ['', '拾', '佰', '仟']
+];
+var head = n < 0 ? '欠' : '';
+n = Math.abs(n);
+var s = '';
+for (var i = 0; i < fraction.length; i++) {
+    s += (digit[Math.floor(n * 10 * Math.pow(10, i)) % 10] + fraction[i]).replace(/零./, '');
+}
+s = s || '整';
+n = Math.floor(n);
+for (var i = 0; i < unit[0].length && n > 0; i++) {
+    var p = '';
+    for (var j = 0; j < unit[1].length && n > 0; j++) {
+        p = digit[n % 10] + unit[1][j] + p;
+
+        n = Math.floor(n / 10);
+    }
+    s = p.replace(/(零.)*零$/, '').replace(/^$/, '零') + unit[0][i] + s;
+}
+return head + s.replace(/(零.)*零元/, '元')
+    .replace(/(零.)+/g, '零')
+    .replace(/^整$/, '零元整');
+};
+
+
+
+      function convert(){
+        let input = document.getElementById("u35_input");
+        let output = document.getElementById("u37_input");
+        let inputValue = input.value;
+        let params = inputValue;
+        if (jugdeString(inputValue) == 0) {
+            alert("格式错误");
+            return 
+        }
+        else if (jugdeString(inputValue) == 1){
+          output.value = digitUppercase(inputValue);
+          $.ajax({
+          type:"GET",  
+          url:`http://localhost:8088/translation/translationFromSmallToCapital?string=${inputValue}`,
+          dataType:"json",
+          success:function(res){
+            console.log(1);
+            output.value = res["result"];
+          }
+        })
+          return
+        }
+        
+        else if (jugdeString(inputValue) == 2){
+          output.value = getMoneyNum(inputValue);
+          $.ajax({
+          type:"GET",  
+          url:`http://localhost:8088/translation/translationFromCapitalToSmall?string=${inputValue}`,
+          dataType:"json",
+          success:function(res){
+            console.log(1);
+            output.value = res["result"];
+          }
+          })
+          return 
+        }
+      }
+    </script>
+    
+    <script type="text/javascript">
+      $axure.utils.getTransparentGifPath = function() { return 'resources/images/transparent.gif'; };
+      $axure.utils.getOtherPath = function() { return 'resources/Other.html'; };
+      $axure.utils.getReloadPath = function() { return 'resources/reload.html'; };
+    </script>
+  </head>
+  <body>
+    <div id="base" class="">
+
+      <!-- Unnamed (图片) -->
+      <div id="u0" class="ax_default _图片">
+        <img id="u0_img" class="img " src="images/主界面/u0.jpg"/>
+        <div id="u0_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u1" class="ax_default ax_default_hidden" style="display:none; visibility: hidden" data-left="1355" data-top="437" data-width="514" data-height="293" layer-opacity="1">
+
+        <!-- Unnamed (矩形) -->
+        <div id="u2" class="ax_default box_1">
+          <div id="u2_div" class=""></div>
+          <div id="u2_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (组合) -->
+        <div id="u3" class="ax_default" data-left="1385" data-top="461" data-width="454" data-height="188" layer-opacity="1">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u4" class="ax_default primary_button">
+            <div id="u4_div" class=""></div>
+            <div id="u4_text" class="text ">
+              <p><span>壹</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u5" class="ax_default primary_button">
+            <div id="u5_div" class=""></div>
+            <div id="u5_text" class="text ">
+              <p><span>贰</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u6" class="ax_default primary_button">
+            <div id="u6_div" class=""></div>
+            <div id="u6_text" class="text ">
+              <p><span>叁</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u7" class="ax_default primary_button">
+            <div id="u7_div" class=""></div>
+            <div id="u7_text" class="text ">
+              <p><span>肆</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u8" class="ax_default primary_button">
+            <div id="u8_div" class=""></div>
+            <div id="u8_text" class="text ">
+              <p><span>伍</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u9" class="ax_default primary_button">
+            <div id="u9_div" class=""></div>
+            <div id="u9_text" class="text ">
+              <p><span>陆</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u10" class="ax_default primary_button">
+            <div id="u10_div" class=""></div>
+            <div id="u10_text" class="text ">
+              <p><span>柒</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u11" class="ax_default primary_button">
+            <div id="u11_div" class=""></div>
+            <div id="u11_text" class="text ">
+              <p><span>捌</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u12" class="ax_default primary_button">
+            <div id="u12_div" class=""></div>
+            <div id="u12_text" class="text ">
+              <p><span>玖</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u13" class="ax_default primary_button">
+            <div id="u13_div" class=""></div>
+            <div id="u13_text" class="text ">
+              <p><span>零</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u14" class="ax_default primary_button">
+            <div id="u14_div" class=""></div>
+            <div id="u14_text" class="text ">
+              <p><span>拾</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u15" class="ax_default primary_button">
+            <div id="u15_div" class=""></div>
+            <div id="u15_text" class="text ">
+              <p><span>佰</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u16" class="ax_default primary_button">
+            <div id="u16_div" class=""></div>
+            <div id="u16_text" class="text ">
+              <p><span>仟</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u17" class="ax_default primary_button">
+            <div id="u17_div" class=""></div>
+            <div id="u17_text" class="text ">
+              <p><span>万</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u18" class="ax_default primary_button">
+            <div id="u18_div" class=""></div>
+            <div id="u18_text" class="text ">
+              <p><span>亿</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u19" class="ax_default primary_button">
+            <div id="u19_div" class=""></div>
+            <div id="u19_text" class="text ">
+              <p><span>元</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u20" class="ax_default primary_button">
+            <div id="u20_div" class=""></div>
+            <div id="u20_text" class="text ">
+              <p><span>整</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u21" class="ax_default button">
+          <div id="u21_div" class=""></div>
+          <div id="u21_text" class="text ">
+            <p><span>清空</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u22" class="ax_default button">
+          <div id="u22_div" class=""></div>
+          <div id="u22_text" class="text ">
+            <p><span>删除</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u23" class="ax_default" data-left="607" data-top="717" data-width="704" data-height="323" layer-opacity="1">
+
+        <!-- Unnamed (矩形) -->
+        <div id="u24" class="ax_default box_2">
+          <div id="u24_div" class=""></div>
+          <div id="u24_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u25" class="ax_default label">
+          <div id="u25_div" class=""></div>
+          <div id="u25_text" class="text ">
+            <p><span>使用帮助</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u26" class="ax_default _段落">
+          <div id="u26_div" class=""></div>
+          <div id="u26_text" class="text ">
+            <p><span>例：输入：123987</span></p><p><span>&nbsp;&nbsp; &nbsp; &nbsp; 输出：壹拾贰万叁仟玖佰捌拾柒元整</span></p><p><span>&nbsp;</span></p><p><span>&nbsp;&nbsp; &nbsp; &nbsp; 输入：陆拾陆万陆仟捌佰捌拾捌元整</span></p><p><span>&nbsp;&nbsp; &nbsp; &nbsp; 输出：666888</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u27" class="ax_default label">
+          <div id="u27_div" class=""></div>
+          <div id="u27_text" class="text ">
+            <p><span style="color:#D9001B;">注</span><span>：所有输入均小于999999999999，且为整数形式</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u28" class="ax_default" data-left="1226" data-top="341" data-width="80" data-height="66" layer-opacity="1">
+
+        <!-- Unnamed (形状) -->
+        <div id="u29" class="ax_default icon">
+          <img id="u29_img" class="img " src="images/主界面/u29.svg"/>
+          <div id="u29_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u30" class="ax_default label">
+          <div id="u30_div" class=""></div>
+          <div id="u30_text" class="text ">
+            <p><span>小写键盘</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (文本域) -->
+      <div id="u31" class="ax_default text_area ax_default_hidden" style="display:none; visibility: hidden">
+        <div id="u31_div" class=""></div>
+        <textarea id="u31_input" class="u31_input" ></textarea>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u32" class="ax_default box_1">
+        <div id="u32_div" class=""></div>
+        <div id="u32_text" class="text ">
+          <p><span>自动转换小写数字和大写数字</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u33" class="ax_default" data-left="590" data-top="341" data-width="619" data-height="75" layer-opacity="1">
+
+        <!-- Unnamed (矩形) -->
+        <div id="u34" class="ax_default label">
+          <div id="u34_div" class=""></div>
+          <div id="u34_text" class="text ">
+            <p><span>输入</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (文本框) -->
+        <div id="u35" class="ax_default text_field">
+          <div id="u35_div" class=""></div>
+          <input id="u35_input" type="text" value="" class="u35_input"/>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u36" class="ax_default" data-left="590" data-top="570" data-width="619" data-height="75" layer-opacity="1">
+
+        <!-- Unnamed (文本框) -->
+        <div id="u37" class="ax_default text_field">
+          <div id="u37_div" class=""></div>
+          <input id="u37_input" type="text" value="" class="u37_input"/>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u38" class="ax_default label">
+          <div id="u38_div" class=""></div>
+          <div id="u38_text" class="text ">
+            <p><span>输出</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (矩形) -->
+      <div id="u39" class="ax_default button">
+        <div id="u39_div" class=""></div>
+        <div id="u39_text" class="text ">
+          <p><span onclick="convert()">转换</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (形状) -->
+      <div id="u40" class="ax_default icon">
+        <img id="u40_img" class="img " src="images/主界面/u40.svg"/>
+        <div id="u40_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u41" class="ax_default" data-left="1320" data-top="341" data-width="80" data-height="66" layer-opacity="1">
+
+        <!-- Unnamed (形状) -->
+        <div id="u42" class="ax_default icon">
+          <img id="u42_img" class="img " src="images/主界面/u29.svg"/>
+          <div id="u42_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u43" class="ax_default label">
+          <div id="u43_div" class=""></div>
+          <div id="u43_text" class="text ">
+            <p><span>大写键盘</span></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (形状) -->
+      <div id="u44" class="ax_default icon">
+        <img id="u44_img" class="img " src="images/主界面/u44.svg"/>
+        <div id="u44_text" class="text " style="display:none; visibility: hidden">
+          <p></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (形状) -->
+      <div id="u45" class="ax_default box_2 ax_default_hidden" style="display:none; visibility: hidden">
+        <img id="u45_img" class="img " src="images/主界面/u45.svg"/>
+        <div id="u45_text" class="text ">
+          <p><span>输入格式错误！</span></p>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u46" class="ax_default ax_default_hidden" style="display:none; visibility: hidden" data-left="1800" data-top="90" data-width="120" data-height="87" layer-opacity="1">
+
+        <!-- Unnamed (矩形) -->
+        <div id="u47" class="ax_default box_1">
+          <div id="u47_div" class=""></div>
+          <div id="u47_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (形状) -->
+        <div id="u48" class="ax_default icon">
+          <img id="u48_img" class="img " src="images/主界面/u48.svg"/>
+          <div id="u48_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unnamed (组合) -->
+      <div id="u49" class="ax_default ax_default_hidden" style="display:none; visibility: hidden" data-left="1414" data-top="316" data-width="397" data-height="497" layer-opacity="1">
+
+        <!-- Unnamed (矩形) -->
+        <div id="u50" class="ax_default box_1">
+          <div id="u50_div" class=""></div>
+          <div id="u50_text" class="text " style="display:none; visibility: hidden">
+            <p></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (组合) -->
+        <div id="u51" class="ax_default" data-left="1478" data-top="342" data-width="268" data-height="352" layer-opacity="1">
+
+          <!-- Unnamed (矩形) -->
+          <div id="u52" class="ax_default primary_button">
+            <div id="u52_div" class=""></div>
+            <div id="u52_text" class="text ">
+              <p><span>1</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u53" class="ax_default primary_button">
+            <div id="u53_div" class=""></div>
+            <div id="u53_text" class="text ">
+              <p><span>2</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u54" class="ax_default primary_button">
+            <div id="u54_div" class=""></div>
+            <div id="u54_text" class="text ">
+              <p><span>3</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u55" class="ax_default primary_button">
+            <div id="u55_div" class=""></div>
+            <div id="u55_text" class="text ">
+              <p><span>4</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u56" class="ax_default primary_button">
+            <div id="u56_div" class=""></div>
+            <div id="u56_text" class="text ">
+              <p><span>5</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u57" class="ax_default primary_button">
+            <div id="u57_div" class=""></div>
+            <div id="u57_text" class="text ">
+              <p><span>6</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u58" class="ax_default primary_button">
+            <div id="u58_div" class=""></div>
+            <div id="u58_text" class="text ">
+              <p><span>7</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u59" class="ax_default primary_button">
+            <div id="u59_div" class=""></div>
+            <div id="u59_text" class="text ">
+              <p><span>8</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u60" class="ax_default primary_button">
+            <div id="u60_div" class=""></div>
+            <div id="u60_text" class="text ">
+              <p><span>9</span></p>
+            </div>
+          </div>
+
+          <!-- Unnamed (矩形) -->
+          <div id="u61" class="ax_default primary_button">
+            <div id="u61_div" class=""></div>
+            <div id="u61_text" class="text ">
+              <p><span>0</span></p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u62" class="ax_default button">
+          <div id="u62_div" class=""></div>
+          <div id="u62_text" class="text ">
+            <p><span>清空</span></p>
+          </div>
+        </div>
+
+        <!-- Unnamed (矩形) -->
+        <div id="u63" class="ax_default button">
+          <div id="u63_div" class=""></div>
+          <div id="u63_text" class="text ">
+            <p><span>删除</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="resources/scripts/axure/ios.js"></script>
+  </body>
+</html>
